@@ -1,0 +1,28 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
+    <title>Find parrot&toucan</title>    
+    
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/static/css/form_upload.css" rel="stylesheet">
+  </head>
+
+  <body class="text-center">   
+    <main class="form-upload">
+        <form  method=post enctype=multipart/form-data>  
+            <h1 class="h3 mb-3 fw-normal">Upload image</h1>
+            {%if img_loc%}
+            <img class="mb-4" src="/static/pred/{{img_loc}}" alt="" width="360" height="360">
+            {%endif%}
+            <input type="file" name="image" id="image" class="form-control">
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Predict</button>            
+        </form>
+    </main>    
+  </body>
+</html>

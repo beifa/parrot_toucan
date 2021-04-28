@@ -1,0 +1,7 @@
+colors:
+- [151, 126, 226]
+- [85, 216, 24]
+names: [parrot, toucan]
+nc: 2
+train: ../parrot_train/images/train
+val: ../parrot_train/images/val

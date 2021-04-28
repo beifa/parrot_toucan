@@ -1,0 +1,34 @@
+{
+    "description": "",
+    "tags": [],
+    "size": {
+        "height": 572,
+        "width": 800
+    },
+    "objects": [
+        {
+            "id": 700806214,
+            "classId": 2908318,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "beifa",
+            "createdAt": "2021-04-27T19:59:04.793Z",
+            "updatedAt": "2021-04-27T19:59:04.793Z",
+            "tags": [],
+            "classTitle": "toucan",
+            "points": {
+                "exterior": [
+                    [
+                        348,
+                        207
+                    ],
+                    [
+                        528,
+                        394
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}

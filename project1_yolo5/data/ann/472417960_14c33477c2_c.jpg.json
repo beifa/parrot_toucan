@@ -1,0 +1,58 @@
+{
+    "description": "",
+    "tags": [],
+    "size": {
+        "height": 533,
+        "width": 799
+    },
+    "objects": [
+        {
+            "id": 700799954,
+            "classId": 2908318,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "beifa",
+            "createdAt": "2021-04-27T17:36:10.974Z",
+            "updatedAt": "2021-04-27T17:36:20.778Z",
+            "tags": [],
+            "classTitle": "toucan",
+            "points": {
+                "exterior": [
+                    [
+                        337,
+                        98
+                    ],
+                    [
+                        638,
+                        468
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 700799961,
+            "classId": 2908318,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "beifa",
+            "createdAt": "2021-04-27T17:36:20.714Z",
+            "updatedAt": "2021-04-27T17:36:20.714Z",
+            "tags": [],
+            "classTitle": "toucan",
+            "points": {
+                "exterior": [
+                    [
+                        164,
+                        209
+                    ],
+                    [
+                        330,
+                        386
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}

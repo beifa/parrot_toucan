@@ -1,0 +1,34 @@
+{
+    "description": "",
+    "tags": [],
+    "size": {
+        "height": 600,
+        "width": 800
+    },
+    "objects": [
+        {
+            "id": 700800044,
+            "classId": 2908317,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "beifa",
+            "createdAt": "2021-04-27T17:38:07.892Z",
+            "updatedAt": "2021-04-27T17:38:07.892Z",
+            "tags": [],
+            "classTitle": "parrot",
+            "points": {
+                "exterior": [
+                    [
+                        222,
+                        112
+                    ],
+                    [
+                        417,
+                        442
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}

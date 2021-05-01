@@ -29,45 +29,55 @@ def evaluate(model, loader)->list:
     with torch.no_grad():
         out = []
         for images,i in loader:  
-            images = list(image.float().to(device) for image in images)
-            outputs = model(images)
+            image = list(image.float().to(device) for image in images)
+            outputs = model(image)
             out.append(outputs)
     return out 
 
-def evl_streamlit(model, img)->list:
-
-    model.load_state_dict(torch.load(PATH_MODEL))
+def evl_streamlit(model, loader, ori_image, threshold)->list:  
     model.eval()
     model.to(device)
-
-    test_img = PT_test([img])
-    test_loader =  DataLoader(test_img,
-                        batch_size=1,                         
-                        num_workers=2,      
-                        collate_fn=collate_fn
-                        )
-
     with torch.no_grad(): 
-      for images, i in test_loader:
-        images = list(image.float().to(device) for image in images) 
-        out = model(images)
-
-    detection_threshold = 0.5
-
-    im = img
-    b = out[0]['boxes'].data.cpu().numpy()
-    if len(b) > 0:
-        s = out[0]['scores'].data.cpu().numpy()        
-        bx = b[s>=detection_threshold]
-        if len(bx) > 0:
-            bx = bx[0]
-            cv2.rectangle(im,
-                    (bx[0], bx[1]),
-                    (bx[2], bx[3]),
-                    (0,0,255), 3) 
-            return im
+      for images, i in loader:
+        image = list(image.float().to(device) for image in images) 
+        out = model(image)    
+        
+        im = ori_image
+        b = out[0]['boxes'].data.cpu().numpy()
+        if len(b) > 0:
+            s = out[0]['scores'].data.cpu().numpy()        
+            bx = b[s>=threshold]
+            if len(bx) > 0:
+                b = bx[0]
+                cv2.rectangle(im,
+                        (b[0], b[1]),
+                        (b[2], b[3]),
+                        (0,0,255), 3) 
+                cv2.putText(im,
+                        str(round(s[0], 2)),
+                        org=(int((b[0]+b[2])/2), 
+                             int(b[1]- 40)
+                             ),
+                        fontFace = cv2.FONT_HERSHEY_SCRIPT_SIMPLEX,
+                        fontScale = 1.05,
+                        color = (255, 255, 255),
+                        thickness = 2
+                        )                
+                return im
+            else: return img
         else: return img
-    else: return img
+
+
+def evl_streamlit_grid(model, loader)->list:
+    model.eval()
+    model.to(device)
+    with torch.no_grad(): 
+        out = []
+        for images, i in loader:
+            image = list(image.float().to(device) for image in images) 
+            outputs = model(image)
+            out.append(outputs)
+    return out
 
 
 if __name__ == "__main__":  

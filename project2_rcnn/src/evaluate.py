@@ -11,11 +11,12 @@ from torchvision import transforms
 from torch.utils.data import DataLoader, Dataset
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
+
 # import pytorch_lightning as pl
 # pl.seed_everything(13)
 
 PATH_TEST_IMG = '../progect2_rcnn/test_data'
-PATH_MODEL = '../progect2_rcnn/model_rcnn/fasterrcnn_resnet50_fpn.pth'
+PATH_MODEL = '../model_rcnn/fasterrcnn_resnet50_fpn.pth'
 
 def collate_fn(batch):
     return tuple(zip(*batch))
@@ -36,7 +37,8 @@ class PT_test(Dataset):
         img = np.transpose(img, (2,0,1))
 
         if self.transforms is not None:
-            img = self.transforms(img)        
+            img = self.transforms(img)  
+  
         return torch.tensor(img, dtype = torch.float32) , idx
 
 class PT_RRCNN(nn.Module):
@@ -59,7 +61,7 @@ class PT_RRCNN(nn.Module):
             assert y is not None, f'target error PT_RRCNN, y : {y}'
             return self.model(x, y)
 
-def evaluate()->list:
+def evaluate(loader)->list:
     
     model = PT_RRCNN(test=True)
     model.load_state_dict(torch.load(PATH_MODEL))
@@ -67,11 +69,51 @@ def evaluate()->list:
     model.to(device)
     with torch.no_grad():
         out = []
-        for images,i in test_loader:  
+        for images,i in loader:  
             images = list(image.float().to(device) for image in images)
             outputs = model(images)
             out.append(outputs)
     return out 
+
+def evl_streamlit(img)->list:
+
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+
+    
+    model = PT_RRCNN(test=True)
+    model.load_state_dict(torch.load(PATH_MODEL))
+    model.eval()
+    model.to(device)
+
+    test_img = PT_test([img])
+
+    test_loader =  DataLoader(test_img,
+                        batch_size=1,                         
+                        num_workers=2,      
+                        collate_fn=collate_fn
+                        )
+
+    with torch.no_grad(): 
+      for images, i in test_loader:
+        images = list(image.float().to(device) for image in images) 
+        out = model(images)
+
+    detection_threshold = 0.5
+
+    im = img
+    b = out[0]['boxes'].data.cpu().numpy()
+    if len(b) > 0:
+        s = out[0]['scores'].data.cpu().numpy()        
+        bx = b[s>=detection_threshold]
+        if len(bx) > 0:
+            bx = bx[0]
+            cv2.rectangle(im,
+                    (bx[0], bx[1]),
+                    (bx[2], bx[3]),
+                    (0,0,255), 3) 
+            return im
+        else: return img
+    else: return img
 
 
 if __name__ == "__main__":  
@@ -87,7 +129,7 @@ if __name__ == "__main__":
                             collate_fn=collate_fn
                             )
 
-    out = evaluate()
+    out = evaluate(test_loader)
 
     plt.figure(figsize=(20,10)) 
 

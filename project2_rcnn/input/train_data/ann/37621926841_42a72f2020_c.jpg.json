@@ -1,0 +1,44 @@
+{
+    "description": "",
+    "tags": [
+        {
+            "id": 103841912,
+            "tagId": 29127060,
+            "name": "3",
+            "value": 3,
+            "labelerLogin": "beifa",
+            "createdAt": "2021-05-01T06:35:28.811Z",
+            "updatedAt": "2021-05-01T06:35:28.811Z"
+        }
+    ],
+    "size": {
+        "height": 512,
+        "width": 512
+    },
+    "objects": [
+        {
+            "id": 716649789,
+            "classId": 2913023,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "beifa",
+            "createdAt": "2021-05-01T06:35:20.411Z",
+            "updatedAt": "2021-05-01T06:35:24.914Z",
+            "tags": [],
+            "classTitle": "parrot",
+            "points": {
+                "exterior": [
+                    [
+                        170,
+                        113
+                    ],
+                    [
+                        184,
+                        169
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}

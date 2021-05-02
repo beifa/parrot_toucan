@@ -1,22 +1,28 @@
 import cv2
 import torch
 import numpy as np
-from pathlib import Path
 import streamlit as st
 import PIL.Image as Image
+from pathlib import Path
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 
 from model import PT_RRCNN
 from dataset import PT_test
-from utils import collate_fn, plot_rectangle
+from utils import collate_fn, plot_rectangle, set_seed
 from evaluate import evl_streamlit, evl_streamlit_grid, evl_streamlit_folds
 
 PATH_TEST_IMG = '../project2_rcnn/input/test_data/'
 PATH_MODEL = 'model_rcnn/fasterrcnn_resnet50_fpn.pth'
 
+set_seed(13)
+
 # @st.cache(allow_output_mutation=True)
 def make_model(data: list):
+    """
+    load pretrain model
+    return model and loader   
+    """
 
     model = PT_RRCNN(test=True)
     model.load_state_dict(torch.load(PATH_MODEL))
@@ -60,17 +66,6 @@ PS:
 """)
 
 st.sidebar.header('Settings:')
-
-
-# to fix
-
-# error: OpenCV(4.5.1) /tmp/pip-req-build-ddpkm6fn/opencv/modules/imgproc/src/color.cpp:182:
-# error: (-215:Assertion failed) !_src.empty() in function 'cvtColor'
-
-
-
-# upload_img = st.sidebar.file_uploader('Upload your image JPE file', type = ['jpg'])
-
 img = st.sidebar.selectbox(
     'Select image',
     tuple(f.name for f in Path(PATH_TEST_IMG).glob('*'))
@@ -83,11 +78,6 @@ nn = st.sidebar.selectbox(
 
 # threshold probability model
 detection_threshold = st.sidebar.slider('Detection threshold', 0.1, 1.0, 0.5)
-
-# error load image
-# if upload_img is not None:
-#     input_image = upload_img
-# else:
 
 input_image = '../project2_rcnn/input/test_data/' + img
 st.header('Image: ')

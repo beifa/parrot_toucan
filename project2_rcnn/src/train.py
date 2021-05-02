@@ -1,26 +1,20 @@
 import cv2
 import json
 import torch
-import torch.nn as nn
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+import torch.nn as nn
 from pathlib import Path
 import PIL.Image as Image
-
-# import pytorch_lightning as pl
-# pl.seed_everything(13)
-
-from sklearn.model_selection import StratifiedKFold
 from torch.utils.data import DataLoader
+from sklearn.model_selection import StratifiedKFold
 
 from model import PT_RRCNN
 from dataset import PT
-from utils import collate_fn, calculate_iou
-
+from utils import collate_fn, calculate_iou, set_seed
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-
 
 def train(model, loader, optimizer, lr_scheduler):
     model.train()
@@ -96,6 +90,7 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
             best_iou = iou
 
 if __name__ == "__main__":
+    set_seed(13)
     EPOCH = 15
     BATCH = 4
     train_data, tags = [], []  
@@ -111,6 +106,14 @@ if __name__ == "__main__":
                 tags.append(int(data['tags'][0]['name']))
             else: print(f)
     print('Train data size: ', len(train_data), len(tags))
+
+    """
+    what is tags:
+        1 - big parrot proportion image
+        2 - medium
+        3 - small
+
+    """
 
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=13)
     tr_idx = []

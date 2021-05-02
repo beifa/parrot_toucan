@@ -4,6 +4,7 @@ import numpy as np
 
 
 def collate_fn(batch):
+    # need to model
     return tuple(zip(*batch))
 
 def calculate_iou(gt, pr, form='pascal_voc') -> float:
@@ -51,6 +52,16 @@ def calculate_iou(gt, pr, form='pascal_voc') -> float:
 
 
 def plot_rectangle(out: list, image: list, threshold: int, color: tuple, outline_thickness:int = 2, text:bool = False)->list:
+    """
+    out: list this out model, have tensor need convert to numpy
+    image: list
+    threshold: int prob threshold filter bad predict
+    color: tuple color (255, 0,0)
+    outline_thickness: int thickness lines
+    text: str add text to image
+
+    plot predict lines(box) on image    
+    """
    
     b = out[0]['boxes'].data.cpu().numpy()
     if len(b) > 0:
@@ -77,6 +88,7 @@ def plot_rectangle(out: list, image: list, threshold: int, color: tuple, outline
     return image
 
 def set_seed(seed=0):
+    #set seed 
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)

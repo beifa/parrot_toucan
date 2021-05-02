@@ -141,5 +141,5 @@ cython_debug/
 *.npy
 *.txt
 *.csv
-#*.pth
+*.pth
 *.md

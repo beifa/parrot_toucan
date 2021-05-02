@@ -12,11 +12,9 @@ Ok, this two project
 This project we detect on image parrot or toucan on photos.
 
 Who is who:
-
-  This Parrot
-<img src= "project1_yolo5/data/img/11752905643_a17ce5b925_c.jpg">
-This guy or not is Toucan:
-<img src = 'project1_yolo5/data/img/23580321782_eec79c397f_c.jpg'>
+This Parrot             |  This guy or not, is Toucan
+:-------------------------:|:-------------------------:
+<img src= "project1_yolo5/data/img/11752905643_a17ce5b925_c.jpg"  width="400">  |  <img src = 'project1_yolo5/data/img/23580321782_eec79c397f_c.jpg' width="400">
 
  tree:
  - flask_visual_result.ipynb - use for visual predict images(load data form 
@@ -44,13 +42,20 @@ This how fast make detection but i not like magic and a make project 2
   - New data, only parrot, train parrot image from forest
   - test data on image have people image not changed.
   - for visual use streamlit
-
-  for visual use streamlit run src/streamlit_viz.py
+  
+  for visual use streamlit run src/streamlit_viz.py 
 
   loads pretrain model 1GB [link](https://drive.google.com/drive/folders/1zoVPg9hn-cKalaP8_5SqT6ocuHAeY9kt?usp=sharing)
 
+## RESUME
 
-  todo 
+По прошествии нескольких дней я вижу свои ошибки. Один из первых датасетов и разметок я сделал для yolo, на этих данных модель модель смогла показать результат, но она ошибается на новых. Проблема, это данные которые я сделал для yolo(они не приведены к одному формату, картинки розные по содержанию, размер объектов на изображении тоже очень разный, данных мало и тд).
 
-  add images
-  add ...
+Когда я стал делать rcnn я не смог на этих данных что-то на тренировать. Я сделал много вариантов датасетов и получил адекватные результаты(более тщательный выбор данных, один размер 512*512, добавил теги для фолдов, более четкая разметка)
+
+Не спроста я не остановился на yolo, после rcnn я смог увидеть много проблем. Я оставлю, как есть данные для сравнения, но в ближайшие время переделаю их.
+
+TODO:
+- make new data to yolo
+- try more label on one image
+- .....

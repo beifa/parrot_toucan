@@ -13,18 +13,22 @@ import streamlit as st
 
 from model import PT_RRCNN
 from dataset import PT_test
-from utils import collate_fn, plot_rectangle
+from utils import collate_fn, plot_rectangle,set_seed
 
+set_seed(13)
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-# import pytorch_lightning as pl
-# pl.seed_everything(13)
-
 
 PATH_TEST_IMG = '../project2_rcnn/input/test_data/'
 PATH_MODEL = 'model_rcnn/fasterrcnn_resnet50_fpn.pth'
 PATH_MODE_FOLDS = 'model_rcnn/folds'
 
-def evaluate(model, loader)->list:   
+def evaluate(model, loader)->list:
+    """
+    model: rrcnn_resnet50
+    loader : dataloader
+    make predict
+    return array    
+    """   
 
     model.load_state_dict(torch.load(PATH_MODEL))
     model.eval()
@@ -39,6 +43,12 @@ def evaluate(model, loader)->list:
 
 @st.cache
 def evl_streamlit(model, loader, ori_image, threshold)->list:  
+    """
+    model: rrcnn_resnet50
+    loader : dataloader
+    ori_image : list,  origin image not changed
+    return image after plot prediction box
+    """
     model.eval()
     model.to(device)
     with torch.no_grad(): 
@@ -49,6 +59,11 @@ def evl_streamlit(model, loader, ori_image, threshold)->list:
         return im
 
 def evl_streamlit_grid(model, loader)->list:
+    """
+    model: rrcnn_resnet50
+    loader : dataloader
+    return list for grid
+    """
     model.eval()
     model.to(device)
     with torch.no_grad(): 
@@ -61,7 +76,11 @@ def evl_streamlit_grid(model, loader)->list:
 
 # @st.cache(hash_funcs={torch.Tensor: evl_streamlit_folds})
 def evl_streamlit_folds(model, loder)->list:
-    # model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=False,  pretrained_backbone=False)
+    """
+    model: rrcnn_resnet50
+    loader : dataloader
+    return: list, predict for single image but for each fold(5)
+    """    
     model.eval()
     model.to(device)
     tmp_out = []

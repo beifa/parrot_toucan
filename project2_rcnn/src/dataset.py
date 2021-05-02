@@ -20,7 +20,7 @@ class PT(Dataset):
         area = (box_axis[1][1] - box_axis[0][1]) * (box_axis[1][0] - box_axis[0][0])        
         boxes = torch.as_tensor(box_axis, dtype=torch.float32)
         boxes = boxes.reshape(-1, 4)
-
+        
         target = {}
         target['boxes'] = boxes
         target['labels'] = torch.ones((1), dtype = torch.long)
@@ -30,8 +30,6 @@ class PT(Dataset):
         img = img.transpose(2, 0, 1).astype(np.float32)   
         if self.transforms is not None:
             img = self.transforms(img)   
-
-        # torch.tensor(img, dtype = torch.float32) 
         return torch.tensor(img, dtype = torch.float32), target 
         
 

@@ -1,11 +1,14 @@
 import cv2
 import torch
+import random
 import numpy as np
+
 
 
 def collate_fn(batch):
     # need to model
     return tuple(zip(*batch))
+
 
 def calculate_iou(gt, pr, form='pascal_voc') -> float:
     """Calculates the Intersection over Union.
@@ -61,8 +64,7 @@ def plot_rectangle(out: list, image: list, threshold: int, color: tuple, outline
     text: str add text to image
 
     plot predict lines(box) on image    
-    """
-   
+    """   
     b = out[0]['boxes'].data.cpu().numpy()
     if len(b) > 0:
         s = out[0]['scores'].data.cpu().numpy()      
@@ -83,9 +85,10 @@ def plot_rectangle(out: list, image: list, threshold: int, color: tuple, outline
                             fontScale = 1.05,
                             color = (255, 255, 255),
                             thickness = outline_thickness)              
-            return image
-        return image
+        #     return image
+        # return image
     return image
+
 
 def set_seed(seed=0):
     #set seed 

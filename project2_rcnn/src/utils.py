@@ -1,3 +1,8 @@
+import cv2
+import torch
+import numpy as np
+
+
 def collate_fn(batch):
     return tuple(zip(*batch))
 
@@ -43,3 +48,30 @@ def calculate_iou(gt, pr, form='pascal_voc') -> float:
     )
 
     return overlap_area / union_area
+
+
+def plot_rectangle(out: list, image: list, threshold: int, color: tuple, outline_thickness:int = 2, text:bool = False)->list:
+   
+    b = out[0]['boxes'].data.cpu().numpy()
+    if len(b) > 0:
+        s = out[0]['scores'].data.cpu().numpy()      
+        bx = b[s>=threshold]
+        if len(bx) > 0:
+            b = bx[0]
+            cv2.rectangle(image,
+                         (b[0], b[1]),
+                         (b[2], b[3]),
+                         color,
+                         outline_thickness)
+            if text:
+                cv2.putText(image,
+                            str(round(s[0], 2)),
+                            org=(int((b[0]+b[2])/2), 
+                            int(b[1]- 40)),
+                            fontFace = cv2.FONT_HERSHEY_SCRIPT_SIMPLEX,
+                            fontScale = 1.05,
+                            color = (255, 255, 255),
+                            thickness = outline_thickness)              
+            return image
+        return image
+    return image

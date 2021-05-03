@@ -84,9 +84,7 @@ def plot_rectangle(out: list, image: list, threshold: int, color: tuple, outline
                             fontFace = cv2.FONT_HERSHEY_SCRIPT_SIMPLEX,
                             fontScale = 1.05,
                             color = (255, 255, 255),
-                            thickness = outline_thickness)              
-        #     return image
-        # return image
+                            thickness = outline_thickness)
     return image
 
 

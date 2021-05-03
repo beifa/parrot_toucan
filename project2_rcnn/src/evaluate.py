@@ -42,7 +42,7 @@ def evaluate(model, loader)->list:
     return out 
 
 @st.cache
-def evl_streamlit(model, loader, ori_image, threshold)->list:  
+def evl_streamlit(model, loader, ori_image : list, threshold : int)->list:  
     """
     model: rrcnn_resnet50
     loader : dataloader
@@ -75,7 +75,7 @@ def evl_streamlit_grid(model, loader)->list:
     return out
 
 # @st.cache(hash_funcs={torch.Tensor: evl_streamlit_folds})
-def evl_streamlit_folds(model, loder)->list:
+def evl_streamlit_folds(model, loader)->list:
     """
     model: rrcnn_resnet50
     loader : dataloader
@@ -88,7 +88,7 @@ def evl_streamlit_folds(model, loder)->list:
         model.load_state_dict(torch.load(Path(PATH_MODE_FOLDS) / f'fasterrcnn_resnet50_fpn_{f}.pth'))
         with torch.no_grad():
             out = []
-            for images,i in loder:  
+            for images,i in loader:  
                 images = list(image.float().to(device) for image in images)
                 outputs = model(images)
                 out.append(outputs)

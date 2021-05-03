@@ -13,14 +13,14 @@ from sklearn.model_selection import StratifiedKFold
 from model import PT_RRCNN
 from dataset import PT
 from utils import collate_fn, calculate_iou, set_seed
-
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-def train(model, loader, optimizer, lr_scheduler):
+
+def train(model, loader, optimizer):
     model.train()
     los = []  
     for images, targets in tqdm(loader):        
-        images = list(image.float().to(device) for image in images)
+        images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) for k, v in t.items()} for t in targets]       
         loss_dict = model(images, targets)
         losses = sum(loss for loss in loss_dict.values())   
@@ -28,8 +28,6 @@ def train(model, loader, optimizer, lr_scheduler):
         losses.backward()
         optimizer.step()
         los.append(losses.item()) 
-    if lr_scheduler is not None:
-        lr_scheduler.step()
     return los
 
 
@@ -39,7 +37,7 @@ def valid(model, loader):
     iou = []
     with torch.no_grad():
         for images, targets in tqdm(loader): 
-          images = list(image.float().to(device) for image in images)
+          images = list(image.to(device) for image in images)
           targets = [{k: v.to(device) for k, v in t.items()} for t in targets] 
           loss_dict = model(images, targets)
           if len(loss_dict[0]['boxes']) > 0:
@@ -80,7 +78,7 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
     lr_scheduler = None
     best_iou = 0
     for epoch in range(EPOCH):
-        tr_los = train(model, tr_loader, optimizer, lr_scheduler)
+        tr_los = train(model, tr_loader, optimizer)
         score, iou = valid(model, vl_loader)
         iou, score = np.mean(iou), np.mean(score)
         print(f"Epoch #{epoch}, Train loss: {np.mean(tr_los)} <--> Val scores: {score} <--> iou: {iou}")
@@ -88,6 +86,9 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
             print(f'Save iou: {iou}')
             torch.save(model.state_dict(), f'../project2_rcnn/model_rcnn/tmp/test_works_script_{f}.pth')   
             best_iou = iou
+        if lr_scheduler is not None:
+            lr_scheduler.step()
+
 
 if __name__ == "__main__":
     set_seed(13)
@@ -106,15 +107,12 @@ if __name__ == "__main__":
                 tags.append(int(data['tags'][0]['name']))
             else: print(f)
     print('Train data size: ', len(train_data), len(tags))
-
     """
     what is tags:
         1 - big parrot proportion image
         2 - medium
         3 - small
-
     """
-
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=13)
     tr_idx = []
     vl_idx = []

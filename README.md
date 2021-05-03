@@ -1,16 +1,19 @@
 # Parrot & toucan
-NN for the detection task parrot and toucan
+NN for the detection task parrot and toucan.
 
-Ok, this two project
+For marking up images, I used [supervise.ly](https://supervise.ly/).
+
+Ok, this two project.
 
 ## Project1_yolo5, [YOLO5](https://github.com/ultralytics/yolov5)
+
+Task to detected toucan or parrot on image:
+
 - Train data have image in forest parrot and toucan
-- for train use train test split 
+- for train use train_test_split 
 - 150 epoch
 - yolo5m
   
-This project we detect on image parrot or toucan on photos.
-
 Who is who:
 This Parrot             |  This guy or not, is Toucan
 :-------------------------:|:-------------------------:
@@ -34,13 +37,19 @@ Epoch   gpu_mem       box       obj       cls     total    labels  img_size
 150 epochs completed in 0.229 hours.
 ```
 <img src = 'project1_yolo5/model_yolo/yolov5m_parrot8/test_batch0_pred.jpg'>
-This how fast make detection but i not like magic and a make project 2
+This how model make detection, but i not like magic and ш decided to make project2.
 
 -------------------
 
 ## Project2_rcnn(fasterrcnn_resnet50)
-  - New data, only parrot, train parrot image from forest
-  - test data on image have people image not changed.
+
+Task to find where parrot on image:
+
+  - New data, only parrot, image of parrots in the forest, maked resize(512*512), add tags(different size parrot on image)
+  - model train:
+      - train_test_split 40 epoch.
+      - stratified folds by tags 40 epoch..
+  - test data: images contain people and previously unseen compositions, image not changed(size).
   - for visual use streamlit
 
   Predict by each fold:
@@ -54,9 +63,12 @@ This how fast make detection but i not like magic and a make project 2
 
 ## RESUME
 
-По прошествии нескольких дней я вижу свои ошибки. Один из первых датасетов и разметок я сделал для yolo, на этих данных модель смогла показать результат, но она ошибается на новых. Проблема, это данные которые я сделал для yolo(они не приведены к одному формату, картинки разные по содержанию, размер объектов на изображении тоже очень разный, данных мало и тд).
+По прошествии нескольких дней я вижу свои ошибки. Один из первых датасетов и разметок, я сделал для yolo, на этих данных модель смогла показать достойный результат.
+Задача которую я ставил для Yolo это отличить попугай на изображении или тукан, с этой задачей модель справляется, но predicted box very big.
 
-Когда я стал делать rcnn я не смог на этих данных что-то на тренировать. Я сделал много вариантов датасетов и получил адекватные результаты(более тщательный выбор данных, один размер 512*512, добавил теги для фолдов, более четкая разметка)
+Проблема, это данные которые я сделал для yolo(они не приведены к одному формату, картинки разные по содержанию, размер объектов на изображении тоже очень разный, данных мало и тд).
+
+Когда я стал делать rcnn я не смог на этих данных что-то на тренировать. Я сделал много вариантов датасетов и получил адекватные результаты(более тщательный выбор данных, один размер 512*512, добавил теги для фолдов, более четкая разметка, я понял какие данные нужно искать для лучшего прогноза).
 
 Не спроста я не остановился на yolo, после rcnn я смог увидеть много проблем. Я оставлю, как есть данные для сравнения, но в ближайшие время переделаю их.
 

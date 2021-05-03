@@ -54,6 +54,7 @@ def valid(model, loader):
 
 
 def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
+    print(f'Fold {fold}')
 
     tr = np.take(train_data, tr_idx[fold])
     vl = np.take(train_data, vl_idx[fold])
@@ -84,20 +85,19 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
         print(f"Epoch #{epoch}, Train loss: {np.mean(tr_los)} <--> Val scores: {score} <--> iou: {iou}")
         if iou > best_iou:
             print(f'Save iou: {iou}')
-            torch.save(model.state_dict(), f'../project2_rcnn/model_rcnn/tmp/test_works_script_{f}.pth')   
+            # torch.save(model.state_dict(), f'../project2_rcnn/model_rcnn/tmp/test_works_script_{f}.pth')   
             best_iou = iou
         if lr_scheduler is not None:
             lr_scheduler.step()
 
 
-if __name__ == "__main__":
-    set_seed(13)
-    EPOCH = 15
-    BATCH = 4
-    train_data, tags = [], []  
+if __name__ == "__main__":    
+    EPOCH = 40
+    BATCH = 4    
     PATH_ANOT = '../project2_rcnn/input/train_data/ann'
     PATH_IMG = '../project2_rcnn/input/train_data/img'
-
+    set_seed(13)
+    train_data, tags = [], []  
     for f, img in zip(sorted(Path(PATH_ANOT).glob('*.*')), sorted(Path(PATH_IMG).glob('*.*'))):
         with Path(f).open() as json_file:
             data = json.load(json_file)
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         print(len(tr), len(vl))
         tr_idx.append(tr)
         vl_idx.append(vl)
-
-    model = PT_RRCNN()
+    
     for f in range(5):
+        model = PT_RRCNN()
         showtime(model, train_data, f)

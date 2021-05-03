@@ -6,7 +6,15 @@ import numpy as np
 
 
 def collate_fn(batch):
-    # need to model
+    """
+    https://discuss.pytorch.org/t/how-to-use-collate-fn/27181/2
+    
+    But basically, the collate_fn receives a list of tuples if your __getitem__ function 
+    from a Dataset subclass returns a tuple, or just a normal list if your Dataset subclass 
+    returns only one element. Its main objective is to create your batch without 
+    spending much time implementing it manually. 
+    
+    """
     return tuple(zip(*batch))
 
 

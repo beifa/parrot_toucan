@@ -21,9 +21,9 @@ This Parrot             |  This guy or not, is Toucan
 
  tree:
  - flask_visual_result.ipynb - use for visual predict images(load data form 
-        test_img_uplode folder)
-- viz_preprocessing.ipynb same param for visual flask
-- yolo5_parrot_toucan.ipynb tarin and predict model
+        test_img_upload folder)
+- viz_preprocessing.ipynb - same param for visual flask
+- yolo5_parrot_toucan.ipynb - train and predict model
 
 Result & Vizual:
 ```
@@ -37,7 +37,7 @@ Epoch   gpu_mem       box       obj       cls     total    labels  img_size
 150 epochs completed in 0.229 hours.
 ```
 <img src = 'project1_yolo5/model_yolo/yolov5m_parrot8/test_batch0_pred.jpg'>
-This how model make detection, but i not like magic and ш decided to make project2.
+This how model make detection, but i not like magic and decided to make project2.
 
 -------------------
 

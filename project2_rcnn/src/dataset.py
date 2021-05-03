@@ -47,8 +47,6 @@ class PT_test(Dataset):
         img = self.data[idx]
         img = img / 255.0
         img = np.transpose(img, (2,0,1))
-
         if self.transforms is not None:
-            img = self.transforms(img)  
-  
-        return torch.tensor(img, dtype = torch.float32) , idx
+            img = self.transforms(img)    
+        return torch.tensor(img, dtype = torch.float32), idx

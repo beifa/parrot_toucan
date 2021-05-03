@@ -36,7 +36,7 @@ def evaluate(model, loader)->list:
     with torch.no_grad():
         out = []
         for images,i in loader:  
-            image = list(image.float().to(device) for image in images)
+            image = list(image.to(device) for image in images)
             outputs = model(image)
             out.append(outputs)
     return out 
@@ -53,7 +53,7 @@ def evl_streamlit(model, loader, ori_image : list, threshold : int)->list:
     model.to(device)
     with torch.no_grad(): 
       for images, i in loader:
-        image = list(image.float().to(device) for image in images) 
+        image = list(image.to(device) for image in images) 
         out = model(image)
         im = plot_rectangle(out, ori_image, threshold, (0,0,255), text=True)             
         return im
@@ -69,7 +69,7 @@ def evl_streamlit_grid(model, loader)->list:
     with torch.no_grad(): 
         out = []
         for images, i in loader:
-            image = list(image.float().to(device) for image in images) 
+            image = list(image.to(device) for image in images) 
             outputs = model(image)
             out.append(outputs)
     return out
@@ -89,7 +89,7 @@ def evl_streamlit_folds(model, loader)->list:
         with torch.no_grad():
             out = []
             for images,i in loader:  
-                images = list(image.float().to(device) for image in images)
+                images = list(image.to(device) for image in images)
                 outputs = model(images)
                 out.append(outputs)
         tmp_out.append(out)                    

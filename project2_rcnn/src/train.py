@@ -30,6 +30,7 @@ def parse_args():
     args, _ = parser.parse_known_args()
     return args
 
+
 def train(model, loader, optimizer):
     model.train()
     los = []  
@@ -66,6 +67,7 @@ def valid(model, loader):
           scores.append(score)
     return scores, iou
 
+
 def tr_transform():
   return A.Compose([
                     A.HorizontalFlip(p=0.5),
@@ -92,7 +94,6 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
 
     tr = np.take(train_data, tr_idx[fold])
     vl = np.take(train_data, vl_idx[fold])
-
     print(f'Train fold shape: {len(tr)}, Val: {len(vl)}')
 
     tr_dataset = PT(tr, tr_transform())
@@ -109,12 +110,10 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
                            collate_fn = collate_fn)
 
     model.to(device)
-
     if config.optimizer=='sgd':
       optimizer = torch.optim.SGD(model.parameters(),lr=args.lr, momentum=0.9,weight_decay=0.005)
     elif config.optimizer=='adam':
       optimizer = torch.optim.Adam(model.parameters(),lr=args.lr)
-
     if config.lr_scheduler is not None:
       lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,
                                                               mode='max',
@@ -172,9 +171,7 @@ if __name__ == "__main__":
 
     EXP_NAME = f"frcnn_v2_{args.lr}_{args.batch}, ver_{np.random.randint(111111111111111111)}"
     for f in range(5):
-
         wandb.init(project="parrot", name=f"{EXP_NAME}_f{f}")
-
         config = wandb.config
         config.exp_name = EXP_NAME
         config.learning_rate = args.lr#, 0.0025
@@ -182,6 +179,5 @@ if __name__ == "__main__":
         config.batch_size = args.batch
         config.lr_scheduler = None
         config.optimizer = 'sgd'
-
         model = PT_RRCNN()
         showtime(model, train_data, f)

@@ -8,6 +8,7 @@ from tqdm import tqdm
 import torch.nn as nn
 from pathlib import Path
 import PIL.Image as Image
+import albumentations as A
 from torch.utils.data import DataLoader
 from sklearn.model_selection import StratifiedKFold
 
@@ -63,6 +64,26 @@ def valid(model, loader):
           scores.append(score)
     return scores, iou
 
+def tr_transform():
+  return A.Compose([
+                    A.HorizontalFlip(p=0.5),
+                    A.VerticalFlip(p=0.5),
+                    A.RandomBrightnessContrast(brightness_limit=0.2,
+                                               contrast_limit=0.2,
+                                               p=0.9),
+                    ],
+                   bbox_params=A.BboxParams(format='pascal_voc', 
+                                            label_fields=['labels']
+                                            ),
+                   )
+
+def vl_transform():  
+  return A.Compose([],
+                   bbox_params=A.BboxParams(format='pascal_voc',  
+                                            label_fields=['labels']
+                                            ),
+                   )
+
 
 def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
     print(f'Fold {fold}')
@@ -72,14 +93,14 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
 
     print(f'Train fold shape: {len(tr)}, Val: {len(vl)}')
 
-    tr_dataset = PT(tr, transform)
+    tr_dataset = PT(tr, tr_transform())
     tr_loader = DataLoader(tr_dataset,
                            batch_size = args.batch,
                            shuffle = True,
                            num_workers = args.n_workers,
                            collate_fn = collate_fn)
     
-    vl_dataset = PT(vl, transform)
+    vl_dataset = PT(vl, vl_transform())
     vl_loader = DataLoader(vl_dataset,
                            batch_size = 1,                     
                            num_workers = args.n_workers,          

@@ -23,26 +23,21 @@ class PT(Dataset):
         target = {}      
         target['labels'] = torch.ones((1), dtype = torch.long)
         target['image_id'] = torch.tensor([idx], dtype = torch.float32)
-        target['area'] = torch.tensor(area, dtype = torch.float32)
-        
+        target['area'] = torch.tensor(area, dtype = torch.float32)        
         # add aurgum
         if self.transforms:
             sample = {
                 'image': img,
                 'bboxes':[np.array(box_axis).ravel()],
                 'labels': ['1']
-                }
-            
+                }            
             sample = self.transforms(**sample)
-            img = sample['image']
-       
+            img = sample['image']       
         img = img / 255.0
         img = img.transpose(2, 0, 1).astype(np.float32)  
-
         bboxes = torch.as_tensor(sample['bboxes'], dtype=torch.float32)
         bboxes = bboxes.reshape(-1, 4)
         target['boxes'] = bboxes
-
         # torch.tensor(img, dtype = torch.float32) 
         return torch.tensor(img, dtype = torch.float32), target  
         

@@ -1,6 +1,7 @@
 import cv2
 import json
 import torch
+import argparse
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
@@ -15,6 +16,16 @@ from dataset import PT
 from utils import collate_fn, calculate_iou, set_seed
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--lr', type=float, default=3e-5)
+    parser.add_argument('--epoch', type=int, default = 35)
+    parser.add_argument('--batch', type=int, default = 4)
+    parser.add_argument('--n_workers', type=int, default = 4)
+      
+    args, _ = parser.parse_known_args()
+    return args
 
 def train(model, loader, optimizer):
     model.train()
@@ -63,22 +74,22 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
 
     tr_dataset = PT(tr, transform)
     tr_loader = DataLoader(tr_dataset,
-                           batch_size = BATCH,
+                           batch_size = args.batch,
                            shuffle = True,
-                           num_workers = 2,
+                           num_workers = args.n_workers,
                            collate_fn = collate_fn)
     
     vl_dataset = PT(vl, transform)
     vl_loader = DataLoader(vl_dataset,
                            batch_size = 1,                     
-                           num_workers = 2,          
+                           num_workers = args.n_workers,          
                            collate_fn = collate_fn)
 
     model.to(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.003, momentum=0.90, weight_decay=0.005)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.90, weight_decay=0.005)
     lr_scheduler = None
     best_iou = 0
-    for epoch in range(EPOCH):
+    for epoch in range(args.epoch):
         tr_los = train(model, tr_loader, optimizer)
         score, iou = valid(model, vl_loader)
         iou, score = np.mean(iou), np.mean(score)
@@ -91,12 +102,12 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
             lr_scheduler.step()
 
 
-if __name__ == "__main__":    
-    EPOCH = 40
-    BATCH = 4    
+if __name__ == "__main__":      
+ 
     PATH_ANOT = '../project2_rcnn/input/train_data/ann'
     PATH_IMG = '../project2_rcnn/input/train_data/img'
     set_seed(13)
+    args = parse_args()
     train_data, tags = [], []  
     for f, img in zip(sorted(Path(PATH_ANOT).glob('*.*')), sorted(Path(PATH_IMG).glob('*.*'))):
         with Path(f).open() as json_file:
@@ -121,6 +132,6 @@ if __name__ == "__main__":
         tr_idx.append(tr)
         vl_idx.append(vl)
     
-    for f in range(5):
-        model = PT_RRCNN()
-        showtime(model, train_data, f)
+    # for f in range(5):
+    model = PT_RRCNN()
+    showtime(model, train_data, f)

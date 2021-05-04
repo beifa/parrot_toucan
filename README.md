@@ -49,6 +49,7 @@ Task to find where parrot on image:
   - model train:
       - train_test_split 40 epoch.
       - stratified folds by tags 40 epoch..
+      - argumentation(img, bbox)
   - test data: images contain people and previously unseen compositions, image not changed(size).
   - for visual use streamlit
 

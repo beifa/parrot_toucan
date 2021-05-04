@@ -15,6 +15,8 @@ from sklearn.model_selection import StratifiedKFold
 from model import PT_RRCNN
 from dataset import PT
 from utils import collate_fn, calculate_iou, set_seed
+
+import wandb
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 
@@ -107,20 +109,35 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
                            collate_fn = collate_fn)
 
     model.to(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.90, weight_decay=0.005)
-    lr_scheduler = None
-    best_iou = 0
+
+    if config.optimizer=='sgd':
+      optimizer = torch.optim.SGD(model.parameters(),lr=args.lr, momentum=0.9,weight_decay=0.005)
+    elif config.optimizer=='adam':
+      optimizer = torch.optim.Adam(model.parameters(),lr=args.lr)
+
+    if config.lr_scheduler is not None:
+      lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,
+                                                              mode='max',
+                                                              factor=0.75,
+                                                              patience=7)
+    else:
+      lr_scheduler = None
+
+    best_iou = 0 
+    wandb.watch(model) 
     for epoch in range(args.epoch):
         tr_los = train(model, tr_loader, optimizer)
         score, iou = valid(model, vl_loader)
         iou, score = np.mean(iou), np.mean(score)
         print(f"Epoch #{epoch}, Train loss: {np.mean(tr_los)} <--> Val scores: {score} <--> iou: {iou}")
+        wandb.log({'epoch': epoch, "tr_loss": np.mean(tr_los), 'vl scores': score, 'iou': iou})
         if iou > best_iou:
             print(f'Save iou: {iou}')
             # torch.save(model.state_dict(), f'../project2_rcnn/model_rcnn/tmp/test_works_script_{f}.pth')   
             best_iou = iou
         if lr_scheduler is not None:
             lr_scheduler.step()
+    wandb.finish()
 
 
 if __name__ == "__main__":      
@@ -152,7 +169,19 @@ if __name__ == "__main__":
         print(len(tr), len(vl))
         tr_idx.append(tr)
         vl_idx.append(vl)
-    
-    # for f in range(5):
-    model = PT_RRCNN()
-    showtime(model, train_data, f)
+
+    EXP_NAME = f"frcnn_v2_{args.lr}_{args.batch}, ver_{np.random.randint(111111111111111111)}"
+    for f in range(5):
+
+        wandb.init(project="parrot", name=f"{EXP_NAME}_f{f}")
+
+        config = wandb.config
+        config.exp_name = EXP_NAME
+        config.learning_rate = args.lr#, 0.0025
+        config.epoch = args.epoch  
+        config.batch_size = args.batch
+        config.lr_scheduler = None
+        config.optimizer = 'sgd'
+
+        model = PT_RRCNN()
+        showtime(model, train_data, f)

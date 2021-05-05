@@ -54,9 +54,21 @@ Task to find where parrot on image:
   - for visual use streamlit
 
   Predict by each fold:
-  
-  <img src= "project2_rcnn/input/rcnn_predict.png"> 
+   <img src= "project2_rcnn/input/rcnn_predict.png"> 
 
+  -v1. 3 may result (no argumentation and scheduler):
+  ```
+  [0.7906, 0.7209, 0.7843, 0.7850,0.715]    
+  mean- 0.75916
+  std -  0.033770199880960146)
+  ```
+  -v2. 5 may result (with argumentation and scheduler):
+  ```
+  each folds [0.7576,0.7638,0.794,0.754, 0.7579] 
+  meam - 0.76546
+  std - 0.01461199507254229)
+  ```
+  Можно увидеть, что у первого варианта разброс значений значительно больше модель не стабильна, добавление аргументации и метода понижения скорости обучения привело к лучшим результатом(они далеки от идеальных), но мы уменьшили разброс, это означает что модель лучше обобщает данные результат стал стабильнее.
   
   for visual use streamlit run src/streamlit_viz.py 
 

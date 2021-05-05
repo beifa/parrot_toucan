@@ -22,9 +22,9 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--lr', type=float, default=3e-5)
+    parser.add_argument('--lr', type=float, default = 0.0035)
     parser.add_argument('--epoch', type=int, default = 35)
-    parser.add_argument('--batch', type=int, default = 4)
+    parser.add_argument('--batch', type=int, default = 2)
     parser.add_argument('--n_workers', type=int, default = 4)
       
     args, _ = parser.parse_known_args()
@@ -111,14 +111,14 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
 
     model.to(device)
     if config.optimizer=='sgd':
-      optimizer = torch.optim.SGD(model.parameters(),lr=args.lr, momentum=0.9,weight_decay=0.005)
+      optimizer = torch.optim.SGD(model.parameters(),lr=args.lr, momentum = 0.9, weight_decay=0.005)
     elif config.optimizer=='adam':
       optimizer = torch.optim.Adam(model.parameters(),lr=args.lr)
     if config.lr_scheduler is not None:
       lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,
-                                                              mode='max',
-                                                              factor=0.75,
-                                                              patience=7)
+                                                              mode = 'max',
+                                                              factor = 0.75,
+                                                              patience = 7)
     else:
       lr_scheduler = None
 
@@ -135,7 +135,7 @@ def showtime(model, train_data:list, fold:int,  transform:bool = None)->None:
             # torch.save(model.state_dict(), f'../project2_rcnn/model_rcnn/tmp/test_works_script_{f}.pth')   
             best_iou = iou
         if lr_scheduler is not None:
-            lr_scheduler.step()
+            lr_scheduler.step(iou)
     wandb.finish()
 
 

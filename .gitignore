@@ -142,4 +142,4 @@ wandb/
 *.txt
 *.csv
 *.pth
-*.md
+#*.md

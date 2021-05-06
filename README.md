@@ -56,23 +56,38 @@ Task to find where parrot on image:
   Predict by each fold:
    <img src= "project2_rcnn/input/rcnn_predict.png"> 
 
-  -v1. 3 may result (no argumentation and scheduler):
+  -v1. 3 may, result (no argumentation and scheduler):
   ```
-  [0.7906, 0.7209, 0.7843, 0.7850,0.715]    
-  mean- 0.75916
-  std -  0.033770199880960146)
+  each folds [0.7906, 0.7209, 0.7843, 0.7850,0.715]    
+  mean - 0.75916
+  std  -  0.033770199880960146
   ```
-  -v2. 5 may result (with argumentation and scheduler):
+  -v2. 5 may, result (with argumentation and scheduler):
   ```
   each folds [0.7576,0.7638,0.794,0.754, 0.7579] 
   meam - 0.76546
-  std - 0.01461199507254229)
+  std  - 0.01461199507254229
   ```
   Можно увидеть, что у первого варианта разброс значений значительно больше модель не стабильна, добавление аргументации и метода понижения скорости обучения привело к лучшим результатом(они далеки от идеальных), но мы уменьшили разброс, это означает что модель лучше обобщает данные результат стал стабильнее.
-  
-  for visual use streamlit run src/streamlit_viz.py 
 
-  loads pretrain model 1GB [link](https://drive.google.com/drive/folders/1zoVPg9hn-cKalaP8_5SqT6ocuHAeY9kt?usp=sharing)
+Update 6 may:
+
+Мне стало интересно, как будет меняться результат если я добавлю новые данные. Я добавил где-то 50 картинок, но результат сильно не изменился даже, ухудшился. Поиски проблемы привели меня к дисбалансу(большие, средние и маленькие попугаи), как правило, когда снимают фотографии попугаев их хотят сделать, как можно крупнее поэтому изображений с маленькими попугаями мало.
+Я на семплировал старые + новые в итоге выровнял дисбаланс.
+
+Train folds_curve:
+<img src= "project2_rcnn/input/folds_curve.png"> 
+```
+batch size = 4,
+убрал A.VerticalFlip(p=0.5) у меня нет перевернутых попугаев
+each folds [0.799,0.766,0.789,0.773,0.775]
+mean - 0.7810114727800056,
+std  - 0.011874766997491815
+```
+  
+For visual use streamlit run src/streamlit_viz.py 
+
+Loads pretrain model 1GB [link](https://drive.google.com/drive/folders/1zoVPg9hn-cKalaP8_5SqT6ocuHAeY9kt?usp=sharing)
 
 ## RESUME
 
@@ -84,8 +99,3 @@ Task to find where parrot on image:
 Когда я стал делать rcnn я не смог на этих данных что-то на тренировать. Я сделал много вариантов датасетов и получил адекватные результаты(более тщательный выбор данных, один размер 512*512, добавил теги для фолдов, более четкая разметка, я понял какие данные нужно искать для лучшего прогноза).
 
 Не спроста я не остановился на yolo, после rcnn я смог увидеть много проблем. Я оставлю, как есть данные для сравнения, но в ближайшие время переделаю их.
-
-TODO:
-- make new data to yolo
-- try more label on one image
-- .....

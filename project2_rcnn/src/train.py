@@ -34,12 +34,12 @@ def parse_args():
 def train(model, loader, optimizer):
     model.train()
     los = []  
-    for images, targets in tqdm(loader):        
+    for images, targets in tqdm(loader):  
+        optimizer.zero_grad()      
         images = list(image.to(device) for image in images)
         targets = [{k: v.to(device) for k, v in t.items()} for t in targets]       
         loss_dict = model(images, targets)
-        losses = sum(loss for loss in loss_dict.values())   
-        optimizer.zero_grad()
+        losses = sum(loss for loss in loss_dict.values())        
         losses.backward()
         optimizer.step()
         los.append(losses.item()) 
